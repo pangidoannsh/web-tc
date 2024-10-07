@@ -5,7 +5,7 @@ import {
   RouterProvider,
 } from "react-router-dom";
 
-const HomePage = lazy(() => import('./pages/HomePage'));
+const HomePage = lazy(() => import('./pages/Home'));
 
 const router = createBrowserRouter([
   {
