@@ -1,0 +1,8 @@
+export const LOGIN_URL = "/login"
+export const SESSION_TOKEN = "_session_token"
+export const REFRESH_TOKEN = "_refresh_token"
+export const USER_DATA = "_user_data"
+export const STOMP_URL = "https://meetoo.digicx.id:8443/ws"
+export const API_URL = "https://meetoo.digicx.id:8443/api/v1/"
+export const BASE_URL = "https://meetoo.digicx.id:8443/"
+export const WEB_RTC = "https://meetoo.digicx.id:8443/rtc/"

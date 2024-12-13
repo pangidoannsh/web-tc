@@ -22,10 +22,13 @@ export default {
         ternary: "#EEF2F6"
       },
       backgroundImage: {
-        'background-gradient': 'linear-gradient(to right, #43AAF5 0%, #3A9EE7 5%, #3A9EE7 27%, #1B80C7 80%)',
+        'background-gradient': 'linear-gradient(to right, #46AAF2 0%, #44A8F0 5%, #3A9EE7 27%, #197FD5 80%)',
       },
       fontSize: {
         "2xs": "10px"
+      },
+      screens: {
+        "3xl": "1900px"
       }
     },
   },

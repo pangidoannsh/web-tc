@@ -18,10 +18,11 @@ const Layout: FC<Props> = ({ children }) => {
         localStorage.setItem("_open_sidebar", (!openSidebar).toString());
     }
     return (
+        // 3xl:max-w-[1600px] 3xl:mx-auto
         <main className='bg-background-gradient from p-6 h-screen flex gap-0'>
             <Sidebar isOpen={openSidebar} />
-            <div className="bg-white rounded-3xl overflow-hidden flex-1">
-                <Header onClickShrink={handelShirnk} />
+            <div className="bg-white rounded-3xl overflow-hidden flex-1 flex flex-col h-full">
+                <Header onClickShrink={handelShirnk} isShrink={openSidebar} />
                 {children}
             </div>
         </main>
