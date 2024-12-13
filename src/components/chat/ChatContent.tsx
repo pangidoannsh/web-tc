@@ -59,8 +59,8 @@ const ChatContent: FC<Props> = ({ messages, user, onSendMessage, messageInput, s
                     </div>
                 </div>
                 {/* ChatBody */}
-                <div className="flex-1 flex flex-col h-full relative overflow-hidden">
-                    <div className="flex-1 overflow-auto v-scroll py-3" ref={containerRef} >
+                <div className="flex-1 h-full overflow-hidden relative">
+                    <div className="h-full overflow-auto v-scroll py-3" ref={containerRef} >
                         {groupMessage.map(item => (
                             <div key={item[0]} className="flex flex-col ">
                                 <div className="flex justify-center mb-2">
@@ -77,12 +77,13 @@ const ChatContent: FC<Props> = ({ messages, user, onSendMessage, messageInput, s
                             </div>
                         ))}
                     </div>
-                    {/* ChatActionBar */}
-                    <ChatActionBar uploadProps={uploadProps} message={messageInput} setMessage={setMessageInput} onSubmit={onSendMessage} inputRef={chatActionInputRef} />
                     <PreviewFile filePath={previewFilePath} setOpen={setOpenPreviewFile} open={openPreviewFile}
                         message={messageInput} setMessage={setMessageInput} onSubmit={onSendMessage} inputRef={chatActionInputRef}
                     />
                 </div>
+                {/* ChatActionBar */}
+                <ChatActionBar uploadProps={uploadProps} message={messageInput} setMessage={setMessageInput} onSubmit={onSendMessage}
+                    inputRef={chatActionInputRef} />
             </div> :
             <div className='h-full w-full flex flex-col gap-3 justify-center items-center'>
                 <img src={Logo} className='w-40' />

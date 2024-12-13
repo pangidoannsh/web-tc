@@ -153,17 +153,25 @@ const ChatsPage: FC = () => {
     }
 
     function handleSendMessage() {
-        _sendMessage(messageInput, "TEXT")
+        if (openPreviewFile) {
+            if (!fileUpload) return
+            _sendMessage(`${fileUpload.name}||${responseFile}||${messageInput}`, "FILE")
+            setOpenPreviewFile(false)
+            setPreviewImage("")
+
+        } else {
+            _sendMessage(messageInput, "TEXT")
+        }
         setMessageInput("")
     }
 
-    function handleSendFile() {
-        if (fileUpload) {
-            _sendMessage(`${fileUpload.name}||${responseFile}`, "FILE")
-            setOpenPreviewFile(false)
-            setPreviewImage("")
-        }
-    }
+    // function handleSendFile() {
+    //     if (fileUpload) {
+    //         _sendMessage(`${fileUpload.name}||${responseFile}||${messageInput}`, "FILE")
+    //         setOpenPreviewFile(false)
+    //         setPreviewImage("")
+    //     }
+    // }
 
 
     const uploadFileProps: UploadProps = {
@@ -211,6 +219,7 @@ const ChatsPage: FC = () => {
             isMounted = true
         }
     }, [])
+
 
     return (
         <Layout>
