@@ -8,12 +8,11 @@ interface Props {
     message: string
     setMessage: React.Dispatch<React.SetStateAction<string>>
     onSubmit?: () => void
-    inputRef?: React.RefObject<HTMLTextAreaElement>
+    inputRef: React.RefObject<HTMLTextAreaElement>
     uploadProps: UploadProps
 }
 const ChatActionBar: FC<Props> = ({ message, setMessage, onSubmit, inputRef, uploadProps }) => {
     const [openMenuUpload, setOpenMenuUpload] = useState(false)
-
     return (
         <div className='bg-white p-3 flex items-center gap-2 relative' >
             <Popover open={openMenuUpload} arrow={false} placement='topLeft'
@@ -29,7 +28,7 @@ const ChatActionBar: FC<Props> = ({ message, setMessage, onSubmit, inputRef, upl
             <button onClick={() => setOpenMenuUpload(prev => !prev)} className={`${openMenuUpload ? "bg-slate-100" : ""} rounded-full p-3`}>
                 <Icon icon="octicon:paperclip-16" className='text-2xl text-slate-400' />
             </button>
-            <MessageInput value={message} setValue={setMessage} onSubmit={onSubmit} ref={inputRef}
+            <MessageInput value={message} setValue={setMessage} onSubmit={onSubmit} inputRef={inputRef}
                 suffix={<button><Icon icon="fluent:mic-20-regular" className='text-2xl' /></button>}
             />
             <button onClick={onSubmit} className='bg-gradient-to-br from-[#50ABED] to-[#1B80C7] rounded-xl p-1.5'>

@@ -1,4 +1,4 @@
-import { FC, useEffect, useRef } from 'react';
+import { FC, Fragment, useEffect, useRef, useState } from 'react';
 import { ChatMessageType, UserType } from '../../interfaces';
 import Avatar from '../ui/Avatar';
 import { Icon } from '@iconify/react/dist/iconify.js';
@@ -9,6 +9,8 @@ import moment from 'moment';
 import { groupByTime } from '../../utils';
 import { UploadChangeParam, UploadFile, UploadProps } from 'antd/es/upload';
 import PreviewFile from './PreviewFile';
+import ImageModal from './ImageModal';
+import { BASE_URL } from '../../const';
 
 interface Props {
     user: UserType | null
@@ -16,27 +18,38 @@ interface Props {
     onSendMessage: () => void
     messageInput: string
     setMessageInput: React.Dispatch<React.SetStateAction<string>>
-    chatActionInputRef?: React.RefObject<HTMLTextAreaElement>
+    chatActionInputRef: React.RefObject<HTMLTextAreaElement>
     onChangeFile: (info: UploadChangeParam<UploadFile<any>>) => void
     uploadProps: UploadProps
     openPreviewFile: boolean
     setOpenPreviewFile: (open: boolean) => void
     previewFilePath?: string
+    autoScrolling: boolean
 }
-const ChatContent: FC<Props> = ({ messages, user, onSendMessage, messageInput, setMessageInput, chatActionInputRef, uploadProps, openPreviewFile, previewFilePath, setOpenPreviewFile }) => {
+const ChatContent: FC<Props> = ({ messages, user, onSendMessage, messageInput, setMessageInput, chatActionInputRef, uploadProps, openPreviewFile, previewFilePath,
+    setOpenPreviewFile, autoScrolling }) => {
     const containerRef = useRef<HTMLDivElement>(null);
-
+    const [showImage, setShowImage] = useState({
+        open: false,
+        src: ""
+    })
     const groupMessage = Object.entries(
         groupByTime("timestamp", messages)
     )
 
+    function showImageFullscreen(src: string) {
+        setShowImage({
+            open: true,
+            src: BASE_URL + src
+        })
+    }
     useEffect(() => {
-        if (containerRef.current) {
+        if (containerRef.current && autoScrolling) {
             containerRef.current.scrollTop = containerRef.current.scrollHeight;
         }
-    }, [groupMessage]);
+    }, [messages]);
 
-    return <div className='flex-1 bg-ternary'>
+    return <div className='md:flex-1 bg-ternary w-[90vw] md:w-full'>
         {user ?
             <div className="flex flex-col h-full">
                 {/* HeaderBar */}
@@ -62,39 +75,35 @@ const ChatContent: FC<Props> = ({ messages, user, onSendMessage, messageInput, s
                 <div className="flex-1 h-full overflow-hidden relative">
                     <div className="h-full overflow-auto v-scroll py-3" ref={containerRef} >
                         {groupMessage.map(item => (
-                            <div key={item[0]} className="flex flex-col ">
+                            <Fragment key={item[0]}>
                                 <div className="flex justify-center mb-2">
                                     <div className='rounded-lg px-3 py-2 bg-white text-slate-400 w-max text-xs'>{item[0]}</div>
                                 </div>
                                 <div>
-                                    {item[1].map(message => <ChatBubble key={message.id} message={{
-                                        id: message.id,
-                                        text: message.content,
-                                        isSender: message.senderId !== user.id,
-                                        time: moment(message.timestamp).format("hh:mm A")
-                                    }} type={message.type} />)}
+                                    {item[1].map(message => <ChatBubble key={message.id} type={message.type} onClickImage={showImageFullscreen}
+                                        message={{
+                                            id: message.id,
+                                            text: message.content,
+                                            isSender: message.senderId !== user.id,
+                                            time: moment(message.timestamp).format("hh:mm A")
+                                        }} />)}
                                 </div>
-                            </div>
+                            </Fragment>
                         ))}
                     </div>
-                    <PreviewFile filePath={previewFilePath} setOpen={setOpenPreviewFile} open={openPreviewFile}
-                        message={messageInput} setMessage={setMessageInput} onSubmit={onSendMessage} inputRef={chatActionInputRef}
-                    />
+                    <PreviewFile filePath={previewFilePath} setOpen={setOpenPreviewFile} open={openPreviewFile} />
                 </div>
                 {/* ChatActionBar */}
                 <ChatActionBar uploadProps={uploadProps} message={messageInput} setMessage={setMessageInput} onSubmit={onSendMessage}
                     inputRef={chatActionInputRef} />
+                <ImageModal open={showImage.open} setOpen={open => setShowImage(prev => ({ ...prev, open }))} src={showImage.src} />
             </div> :
             <div className='h-full w-full flex flex-col gap-3 justify-center items-center'>
                 <img src={Logo} className='w-40' />
-                <div className='text-2xl font-semibold text-slate-500'>Select a chat to start messaging</div>
+                <div className='text-2xl font-semibold text-slate-500 text-center'>Select a chat to start messaging</div>
             </div>
         }
     </div>
 };
 
 export default ChatContent;
-
-{/* <PreviewFile filePath={previewFilePath} setOpen={setOpenPreviewFile} open={openPreviewFile}
-                message={messageInput} setMessage={setMessageInput} onSubmit={onSendMessage} inputRef={chatActionInputRef}
-            /> */}

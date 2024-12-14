@@ -12,7 +12,7 @@ interface Props {
     searchRef?: React.RefObject<HTMLInputElement>
 }
 const ContactContent: FC<Props> = ({ isOpen, setIsOpen, onNewChat, contact, searchRef }) => (
-    <div className={`absolute top-0 left-0 pt-4 ps-6 flex flex-col gap-2 bg-white w-[360px] 3xl:w-[460px] border-r border-slate-200 h-full duration-200 pe-4
+    <div className={`absolute top-0 left-0 pt-4 ps-4 sm:ps-6 flex flex-col gap-2 bg-white w-[340px] md:w-[360px] 3xl:w-[460px] border-r border-slate-200 h-full duration-200 pe-4
     ${isOpen ? "translate-x-0" : "-translate-x-full"}`}>
         <div className="flex gap-3 items-center">
             <button onClick={() => setIsOpen(false)}>

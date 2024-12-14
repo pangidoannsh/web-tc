@@ -1,5 +1,4 @@
 import { FC, useEffect, useRef, useState } from 'react';
-import Layout from '../components/Layout';
 import { ChatMessageType, ChatRoom, TypeChat, UserType } from '../interfaces';
 import ChatList from '../components/chat/ChatList';
 import SidebarHeader from '../components/chat/SidebarHeader';
@@ -15,6 +14,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { UploadChangeParam, UploadProps } from 'antd/es/upload';
 import { useNotif } from '../providers/NotifProvider';
 import { Spin } from 'antd';
+import Layout from '../components/Layout';
 
 let isMounted = false
 
@@ -36,7 +36,7 @@ const ChatsPage: FC = () => {
     const [previewImage, setPreviewImage] = useState<string>();
     const [fileUpload, setFileUpload] = useState<File | null>(null)
     const [responseFile, setResponseFile] = useState<string | null>(null)
-
+    const [autoScrollingChatContainer, setAutoScrollingChatContainer] = useState(true)
     const [loading, setLoading] = useState(false)
 
     function handleChangeFileUpload(info: UploadChangeParam) {
@@ -47,6 +47,7 @@ const ChatsPage: FC = () => {
             const previewUrl = URL.createObjectURL(file);
             setPreviewImage(previewUrl);
             setOpenPreviewFile(true)
+            chatActionInputRef.current?.focus()
             setLoading(false)
             setResponseFile(info.file.response.data.path);
         } else if (info.file.status === "uploading") {
@@ -95,13 +96,15 @@ const ChatsPage: FC = () => {
 
     function handleNewChat(user: UserType) {
         setSelectedUser(user)
-        setSelectedChat(null)
-        const chat = chatLists.find(c => c.senderId === user.id)
+
+        const chat = chatLists.find(c => c.senderId === user.id || c.recipientId === user.id)
         setOpenPreviewFile(false)
 
         if (chat) {
+            setSelectedChat(chat)
             chatRoom(chat.chatRoomId)
         } else {
+            setSelectedChat(null)
             setMessages([])
         }
         setOpenContact(false)
@@ -119,7 +122,6 @@ const ChatsPage: FC = () => {
 
     function _sendMessage(content: any, type: TypeChat) {
         const clientChatId = uuidv4()
-
         const newMessage: ChatMessageType = {
             id: uuidv4(),
             chatRoomId: selectedChat?.chatRoomId || "",
@@ -148,14 +150,16 @@ const ChatsPage: FC = () => {
                 type,
                 path: "",
                 localPath: "",
-            })
+            }),
         })
+        getChatList()
     }
 
     function handleSendMessage() {
+        setAutoScrollingChatContainer(true)
         if (openPreviewFile) {
             if (!fileUpload) return
-            _sendMessage(`${fileUpload.name}||${responseFile}||${messageInput}`, "FILE")
+            _sendMessage(`${fileUpload.name}||${responseFile}${messageInput.trim() != "" ? `||${messageInput}` : ""}`, "FILE")
             setOpenPreviewFile(false)
             setPreviewImage("")
 
@@ -164,15 +168,6 @@ const ChatsPage: FC = () => {
         }
         setMessageInput("")
     }
-
-    // function handleSendFile() {
-    //     if (fileUpload) {
-    //         _sendMessage(`${fileUpload.name}||${responseFile}||${messageInput}`, "FILE")
-    //         setOpenPreviewFile(false)
-    //         setPreviewImage("")
-    //     }
-    // }
-
 
     const uploadFileProps: UploadProps = {
         action: `${API_URL}chat/room/${selectedChat?.chatRoomId}/upload`,
@@ -188,6 +183,7 @@ const ChatsPage: FC = () => {
                 newClient.subscribe(
                     `/user/${session?.user?.id}/queue/messages`,
                     async (message) => {
+                        setAutoScrollingChatContainer(false)
                         const body = JSON.parse(message.body);
                         if (body.chatRoomId === selectedChat?.chatRoomId) {
                             setMessages(prev => [...prev, body])
@@ -203,6 +199,7 @@ const ChatsPage: FC = () => {
         })
         newClient.activate();
         socketClient.current = newClient
+        setAutoScrollingChatContainer(true)
 
         return () => {
             sock.close()
@@ -220,10 +217,9 @@ const ChatsPage: FC = () => {
         }
     }, [])
 
-
     return (
         <Layout>
-            <div className="flex flex-1 h-full overflow-hidden relative">
+            <div className="flex flex-1 h-full overflow-auto md:overflow-hidden relative">
                 {loading && <div className="absolute h-full w-full bg-sky-50 flex justify-center items-center">
                     <div className="bg-white rounded-md p-4 flex gap-2 items-center">
                         <Spin spinning={loading} size="large" />
@@ -231,8 +227,8 @@ const ChatsPage: FC = () => {
                     </div>
                 </div>}
                 {/* Sidebar */}
-                <div className="relative w-max overflow-hidden">
-                    <div className="pt-4 ps-6 flex flex-col gap-2 w-[360px] 3xl:w-[460px] border-r border-slate-200 h-full">
+                <div className={`relative w-max overflow-hidden flex-shrink-0`}>
+                    <div className={`pt-4 ps-4 md:ps-6 flex flex-col gap-2 h-full md:w-[360px] 3xl:w-[460px] border-r border-slate-200 `}>
                         {/* Header */}
                         <SidebarHeader onClickOpenContact={openContactContent} />
                         {/* Chat List */}
@@ -242,7 +238,7 @@ const ChatsPage: FC = () => {
                 </div>
                 <ChatContent messages={messages} user={selectedUser} onSendMessage={handleSendMessage} messageInput={messageInput} setMessageInput={setMessageInput}
                     chatActionInputRef={chatActionInputRef} onChangeFile={handleChangeFileUpload} uploadProps={uploadFileProps} openPreviewFile={openPreviewFile}
-                    setOpenPreviewFile={setOpenPreviewFile} previewFilePath={previewImage}
+                    setOpenPreviewFile={setOpenPreviewFile} previewFilePath={previewImage} autoScrolling={autoScrollingChatContainer}
                 />
             </div>
         </Layout>

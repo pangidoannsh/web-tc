@@ -11,15 +11,15 @@ interface Props {
 }
 const MenuItem: FC<Props> = ({ menu, isActived, isOpenSidebar }) => {
     return (
-        <Link to={menu.path} className={`rounded-l-full h-full flex gap-6 items-center px-7 py-2.5 relative cursor-pointer 
+        <Link to={menu.path} className={`rounded-l-full h-full md:flex gap-6 items-center px-4 md:px-7 py-2.5 relative cursor-pointer 
         ${isActived ? "bg-white text-primary-main" : "text-white"}`}>
-            <div className="w-6">
+            <div className="md:w-6">
                 <Icon icon={menu.icon} className='text-2xl' />
             </div>
-            {isOpenSidebar ? <span className='font-semibold text-sm h-6 overflow-hidden'>{menu.label}</span> : ""}
+            {isOpenSidebar ? <span className='font-semibold text-sm h-6 overflow-hidden md:block hidden'>{menu.label}</span> : ""}
             {isActived ? (<>
-                <img src={Curve} className='absolute top-0 right-0 -translate-y-[97%] select-none' />
-                <img src={Curve} className='absolute bottom-0 right-0 translate-y-[97%] -rotate-90 select-none' />
+                <img src={Curve} className='absolute top-0 -right-[0.5px] md:right-0 -translate-y-[97%] select-none' />
+                <img src={Curve} className='absolute bottom-0 -right-[0.5px] md:right-0 translate-y-[97%] -rotate-90 select-none' />
             </>) : ""}
         </Link>
     );

@@ -18,7 +18,7 @@ const Header: FC<Props> = ({ onClickShrink, isShrink }) => {
     return (
         <header className='flex justify-between w-full items-center px-6 p-4 border-b border-slate-200'>
             <div className="flex gap-6 items-center">
-                <button onClick={onClickShrink}>
+                <button onClick={onClickShrink} className='hidden sm:block'>
                     <Icon icon="icon-park-outline:menu-unfold-one" className={`duration-200 text-primary-main text-2xl ${isShrink ? '' : 'rotate-180'}`} />
                 </button>
             </div>

@@ -60,9 +60,9 @@ const LoginPage: FC = () => {
         return <Navigate to={session?.user.role == "ROLE_ADMIN" ? "/dashboard" : "/chats"} />
     } else {
         return (
-            <div className='flex h-screen items-center justify-center flex-col gap-16'>
+            <div className='flex h-screen items-center justify-center flex-col gap-16 px-6'>
                 <h1 className='text-4xl font-bold'>Login</h1>
-                <form onSubmit={_handleSubmit} className='flex flex-col gap-6 w-[460px]'>
+                <form onSubmit={_handleSubmit} className='flex flex-col gap-6 w-full md:w-[460px]'>
                     <InputField ref={usernameRef} placeholder='Username' className='rounded-xl w-full py-3' />
                     <InputField ref={passwordRef} placeholder='Password' className='rounded-xl w-full py-3' type='password' />
                     <button className='text-white text-lg font-extrabold rounded-xl bg-gradient-to-br from-[#50ABED] to-[#1B80C7] p-3'>

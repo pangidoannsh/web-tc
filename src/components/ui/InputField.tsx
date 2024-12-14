@@ -13,7 +13,7 @@ interface Props {
     onChange?: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
     containerClassName?: string;
     as?: "input" | "textarea";
-    rows?: number;
+    height?: number;
     onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
 }
 
@@ -32,7 +32,7 @@ const InputField = forwardRef<HTMLInputElement | HTMLTextAreaElement, Props>(
             onChange,
             containerClassName,
             as = "input",
-            rows = 1,
+            height,
             onKeyDown,
         },
         ref
@@ -50,10 +50,9 @@ const InputField = forwardRef<HTMLInputElement | HTMLTextAreaElement, Props>(
                             placeholder={placeholder}
                             value={value}
                             onChange={onChange}
-                            rows={rows}
                             className="focus:outline-none bg-transparent flex-1 text-slate-500 resize-none"
                             onKeyDown={onKeyDown}
-                            style={{ resize: 'none' }}
+                            style={{ resize: 'none', height: height ? `${height}px` : 'auto' }}
                         />
                     ) : (
                         <input

@@ -13,7 +13,6 @@ const menus: NavMenuType[] = [
         label: "Dashboard",
         icon: "mdi:view-dashboard-edit",
         path: "/dashboard",
-        access: ["ROLE_ADMIN"]
     },
     {
         label: "Data User",
@@ -56,7 +55,7 @@ const Sidebar: FC<Props> = ({ isOpen }) => {
     const user = session?.user!;
 
     return (
-        <nav className={`${isOpen ? "w-[200px]" : "w-[80px]"} duration-200 h-full flex flex-col items-center`}>
+        <nav className={`${isOpen ? "w-[200px]" : "md:w-[80px]"} duration-200 h-full flex flex-col items-center`}>
             <div className='flex gap-3 items-center px-1 py-3 border-b-[0.5px] border-white w-max'>
                 <img src={Logo} className='w-9' />
                 {isOpen ? <div className="font-bold text-lg text-white">Tactical Chat</div> : ""}
