@@ -19,7 +19,7 @@ interface Props {
 }
 
 const FormGroup: FC<Props> = ({ isOpen, setIsOpen, titleModal, loading, onSubmit, submitText = "Submit", users = [], value, setValue }) => {
-    function onChangeName(e: ChangeEvent<HTMLInputElement>) {
+    function onChangeName(e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
         if (!setValue) return
         setValue(prev => ({ ...prev, name: e.target.value }))
     }

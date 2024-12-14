@@ -7,7 +7,7 @@ interface Props {
     group?: GroupType | undefined
     isOpen: boolean
     setIsOpen: (isOpen: boolean) => void
-    onSuccess: () => void
+    onSuccess?: () => void
 }
 
 const EditGroup: FC<Props> = ({ isOpen, setIsOpen, onSuccess, group }) => {
@@ -20,8 +20,7 @@ const EditGroup: FC<Props> = ({ isOpen, setIsOpen, onSuccess, group }) => {
     function handleSubmit(e: FormEvent<HTMLFormElement>) {
         e.preventDefault()
         setLoading(true)
-        console.log(form);
-
+        onSuccess?.()
     }
 
     useEffect(() => {
