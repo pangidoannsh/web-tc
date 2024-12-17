@@ -6,11 +6,12 @@ import ChatActionBar from './ChatActionBar';
 import Logo from "../../assets/images/logo.png"
 import ChatBubble from './ChatBubble';
 import moment from 'moment';
-import { groupByTime } from '../../utils';
+import { formatDateChatDivider, groupByTime } from '../../utils';
 import { UploadChangeParam, UploadFile, UploadProps } from 'antd/es/upload';
 import PreviewFile from './PreviewFile';
 import ImageModal from './ImageModal';
 import { BASE_URL } from '../../const';
+import CallModal from './CallModal';
 
 interface Props {
     user: UserType | null
@@ -29,6 +30,8 @@ interface Props {
 const ChatContent: FC<Props> = ({ messages, user, onSendMessage, messageInput, setMessageInput, chatActionInputRef, uploadProps, openPreviewFile, previewFilePath,
     setOpenPreviewFile, autoScrolling }) => {
     const containerRef = useRef<HTMLDivElement>(null);
+    const [openCall, setOpenCall] = useState(false)
+
     const [showImage, setShowImage] = useState({
         open: false,
         src: ""
@@ -67,7 +70,7 @@ const ChatContent: FC<Props> = ({ messages, user, onSendMessage, messageInput, s
                         </div>
                     </div>
                     <div className="flex items-center gap-6 text-slate-800">
-                        <button><Icon icon="fluent:call-20-regular" className='text-2xl' /></button>
+                        <button onClick={() => setOpenCall(true)}><Icon icon="fluent:call-20-regular" className='text-2xl' /></button>
                         <button><Icon icon="mynaui:video" className='text-2xl' /></button>
                     </div>
                 </div>
@@ -77,7 +80,7 @@ const ChatContent: FC<Props> = ({ messages, user, onSendMessage, messageInput, s
                         {groupMessage.map(item => (
                             <Fragment key={item[0]}>
                                 <div className="flex justify-center mb-2">
-                                    <div className='rounded-lg px-3 py-2 bg-white text-slate-400 w-max text-xs'>{item[0]}</div>
+                                    <div className='rounded-lg px-3 py-2 bg-white text-slate-400 w-max text-xs'>{formatDateChatDivider(item[0])}</div>
                                 </div>
                                 <div>
                                     {item[1].map(message => <ChatBubble key={message.id} type={message.type} onClickImage={showImageFullscreen}
@@ -103,6 +106,7 @@ const ChatContent: FC<Props> = ({ messages, user, onSendMessage, messageInput, s
                 <div className='text-2xl font-semibold text-slate-500 text-center'>Select a chat to start messaging</div>
             </div>
         }
+        <CallModal open={openCall} username={user?.name!} onEndCall={() => setOpenCall(false)} />
     </div>
 };
 

@@ -9,15 +9,11 @@ import { jsonToGroupType } from '../../utils';
 import CreateGroup from '../../components/groups/CreateGroup';
 import EditGroup from '../../components/groups/EditGroup';
 import DataTable, { DataTableUtils } from '../../components/ui/DataTable';
+import moment from 'moment';
+import { Link } from 'react-router-dom';
 
 
 const columns: ColumnType[] = [
-    {
-        title: '#',
-        dataIndex: 'no',
-        key: 'no',
-        align: 'center'
-    },
     {
         title: 'Name',
         dataIndex: 'name',
@@ -101,17 +97,17 @@ const GroupsPage: FC = () => {
     }
 
     function groupTemplate(data: GroupType): any {
-        const { status, id, totalMember, totalTaskDone, totalTaskInProgress, totalTaskTodo } = data
+        const { status, id, totalTaskDone, totalTaskInProgress, totalTaskTodo } = data
         const totalTask = totalTaskDone + totalTaskInProgress + totalTaskTodo
         return {
             ...data,
             key: id,
-            totalMember: totalMember,
-            totalTask: <button className='bg-primary-100 flex gap-1 justify-center w-max items-center text-primary-main px-3 py-1 rounded-lg'>
+            totalTask: <Link to={`/groups/${id}/tasks`} className='bg-primary-100 flex gap-1 justify-center w-max items-center text-primary-main px-3 py-1 rounded-lg'>
                 <Icon icon="hugeicons:task-01" className='text-lg' />
                 <span className='text-sm font-semibold'>{totalTask}</span>
-            </button>,
+            </Link>,
             status: <Switch checked={status} onChange={(checked: boolean) => _handleSwitchStatus(id, checked)} />,
+            createdAt: moment(data.createdAt).format('DD MMMM YYYY'),
             action: <div className='flex gap-2 justify-center'>
                 <button onClick={() => _handleClickEdit(data)}>
                     <Icon icon="cuida:edit-outline" className='text-primary-500 text-2xl' />

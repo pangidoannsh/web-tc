@@ -56,6 +56,15 @@ export type GroupType = {
     admin: string
 }
 
+export type DetailGroupType = {
+    id: string
+    name: string
+    admin: string
+    createdAt: string
+    member: string[]
+    status: boolean
+}
+
 export type FormGroupType = {
     name: string,
     admin: string,

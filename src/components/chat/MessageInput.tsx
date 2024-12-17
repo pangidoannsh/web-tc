@@ -19,7 +19,7 @@ const MessageInput: FC<Props> = ({ value, setValue, onSubmit, suffix, onChange, 
 
     function handleChangeInput(ev: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
         onChange?.(ev)
-        setValue(ev.target.value.trim());
+        setValue(ev.target.value);
     }
 
     const handleKeyDown = (ev: React.KeyboardEvent) => {

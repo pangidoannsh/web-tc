@@ -16,9 +16,8 @@ import { useNotif } from '../providers/NotifProvider';
 import { Spin } from 'antd';
 import Layout from '../components/Layout';
 
-let isMounted = false
-
 const ChatsPage: FC = () => {
+    const isMounted = useRef(false)
     const socketClient = useRef<Client | null>(null)
     const searchContactRef = useRef<HTMLInputElement | null>(null)
     const chatActionInputRef = useRef<HTMLTextAreaElement | null>(null)
@@ -55,6 +54,8 @@ const ChatsPage: FC = () => {
         }
         else if (info.file.status === "error") {
             setLoading(false)
+            console.log(info);
+
             showErrorNotification({ message: "Terjadi Kesalahan", description: "Gagal Upload File" })
         }
     }
@@ -208,12 +209,12 @@ const ChatsPage: FC = () => {
     }, [selectedChat])
 
     useEffect(() => {
-        if (!isMounted) {
+        if (!isMounted.current) {
             getChatList()
             getContactList()
         }
         return () => {
-            isMounted = true
+            isMounted.current = true
         }
     }, [])
 

@@ -53,6 +53,7 @@ const Sidebar: FC<Props> = ({ isOpen }) => {
     const { session } = useSession()
     const location = useLocation()
     const user = session?.user!;
+    const isActivedMenu = (menuPath: string) => menuPath.slice(1) === location.pathname.split("/")[1]
 
     return (
         <nav className={`${isOpen ? "w-[200px]" : "md:w-[80px]"} duration-200 h-full flex flex-col items-center`}>
@@ -61,7 +62,7 @@ const Sidebar: FC<Props> = ({ isOpen }) => {
                 {isOpen ? <div className="font-bold text-lg text-white">Tactical Chat</div> : ""}
             </div>
             <ul className='flex flex-col gap-5 mt-8 w-full'>
-                {menus.filter(item => item.access?.includes(user.role) || !item.access).map(menu => <MenuItem key={menu.path} isActived={location.pathname.includes(menu.path)} menu={menu} isOpenSidebar={isOpen} />)}
+                {menus.filter(item => item.access?.includes(user.role) || !item.access).map(menu => <MenuItem key={menu.path} isActived={isActivedMenu(menu.path)} menu={menu} isOpenSidebar={isOpen} />)}
             </ul>
         </nav>
     );

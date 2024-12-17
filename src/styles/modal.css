@@ -1,0 +1,34 @@
+.modal-container {
+  position: fixed;
+  z-index: 1000;
+  opacity: 1;
+  background: white;
+  border-radius: 24px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  animation: modalopen .3s;
+}
+
+
+.fade-out {
+  opacity: 0;
+  scale: 0.8;
+  transition: 0.3s ease-in-out;
+}
+
+.action-button {
+  background: radial-gradient(circle, #EFEFEF 0%, #D5D5D5 100%);
+  border-radius: 999px;
+  padding: 12px;
+}
+
+@keyframes modalopen {
+  0% {
+    opacity: 0;
+    scale: 0.8;
+  }
+
+  100% {
+    opacity: 1;
+    scale: 1;
+  }
+}

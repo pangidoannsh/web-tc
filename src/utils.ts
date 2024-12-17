@@ -1,4 +1,4 @@
-import { GroupType, UserType } from "./interfaces";
+import { DetailGroupType, GroupType, UserType } from "./interfaces";
 import moment from "moment";
 import "moment/locale/id";
 
@@ -23,6 +23,17 @@ export function jsonToGroupType(jsonData: any): GroupType {
         totalTaskDone: jsonData["totalTaskDone"],
         totalTaskInProgress: jsonData["totalTaskInProgress"],
         totalTaskTodo: jsonData["totalTaskTodo"],
+        status: jsonData["status"] == 1
+    }
+}
+
+export function jsonToDetailGroupType(jsonData: any): DetailGroupType {
+    return {
+        id: jsonData["id"],
+        name: jsonData["name"],
+        admin: jsonData["admin"],
+        createdAt: jsonData["createdAt"],
+        member: jsonData["member"],
         status: jsonData["status"] == 1
     }
 }
@@ -56,8 +67,7 @@ export function groupByTime<T>(key: keyof T, data: T[]): GroupedData<T> {
     }
 
     const formatTanggal = (timestamp: string | number | Date): string => {
-        const options: Intl.DateTimeFormatOptions = { day: "2-digit", month: "long" };
-        return new Date(timestamp).toLocaleDateString("id-ID", options);
+        return new Date(timestamp).toLocaleDateString("id-ID");
     };
 
     return sortedData.reduce((result: GroupedData<T>, item: T) => {
@@ -77,3 +87,25 @@ export function groupByTime<T>(key: keyof T, data: T[]): GroupedData<T> {
         return result;
     }, {});
 }
+
+export function formatDateChatDivider(inputDate: string) {
+    const [day, month, year] = inputDate.split("/").map(Number);
+    const date = new Date(year, month - 1, day);
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const yesterday = new Date(today);
+    yesterday.setDate(today.getDate() - 1);
+
+    const options: Intl.DateTimeFormatOptions = { day: "2-digit", month: "long" };
+
+    if (date.getTime() === today.getTime()) {
+        return "Today";
+    } else if (date.getTime() === yesterday.getTime()) {
+        return "Kemarin";
+    } else {
+        return date.toLocaleDateString("id-ID", options);
+    }
+}
+

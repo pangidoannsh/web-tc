@@ -11,11 +11,13 @@ import AuthRoutes from './lib/AuthRoutes';
 import { ConfigProvider } from 'antd';
 import { appThemeConfig } from './config/theme';
 import NotifProvider from './providers/NotifProvider';
+import TestPage from './Test';
 
 const DashboardPage = lazy(() => import('./pages/dashboard'));
 const ChatsPage = lazy(() => import('./pages/Chats'));
 const UsersPage = lazy(() => import('./pages/admin/Users'));
 const GroupsPage = lazy(() => import('./pages/admin/Groups'));
+const TasksPage = lazy(() => import('./pages/admin/Tasks'));
 const LoginPage = lazy(() => import('./pages/Login'));
 
 const router = createBrowserRouter([
@@ -32,22 +34,35 @@ const router = createBrowserRouter([
     element: <AuthRoutes />,
     children: [
       {
-        path: "/dashboard",
+        path: "dashboard",
         element: <DashboardPage />,
       },
       {
-        path: "/users",
+        path: "users",
         element: <UsersPage />,
       },
       {
-        path: "/groups",
-        element: <GroupsPage />,
+        path: "groups",
+        children: [
+          {
+            path: "",
+            element: <GroupsPage />,
+          },
+          {
+            path: ":id/tasks",
+            element: <TasksPage />,
+          }
+        ]
       },
       {
         path: "/chats",
         element: <ChatsPage />,
       },
     ]
+  },
+  {
+    path: "/test",
+    element: <TestPage />
   }
 ]);
 
