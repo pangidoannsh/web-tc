@@ -2,6 +2,7 @@ import { FC, useEffect, useState } from 'react';
 import { Icon } from '@iconify/react/dist/iconify.js';
 import Avatar from '../ui/Avatar';
 import ModalDraggable from '../ui/ModalDraggable';
+import { WebSocket } from 'ws';
 
 interface Props {
     open: boolean
@@ -37,6 +38,8 @@ const CallModal: FC<Props> = ({ open, username, image, onEndCall }) => {
     useEffect(() => {
         if (!open) {
             setFullscreen(false)
+        } else {
+            // const ws = new WebSocket
         }
     }, [open]);
 

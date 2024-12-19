@@ -10,12 +10,13 @@ interface Props {
   description?: string | ReactNode
   name?: string
   beforeUpload?: (file: RcFile) => boolean
+  multiple?: boolean
 }
-const FileUpload: FC<Props> = ({ label, description, name, beforeUpload }) => {
+const FileUpload: FC<Props> = ({ label, description, name, beforeUpload, multiple = false }) => {
   return (
     <div className='flex flex-col gap-1'>
       {label}
-      <Dragger multiple={false} name={name} beforeUpload={beforeUpload}>
+      <Dragger multiple={multiple} name={name} beforeUpload={beforeUpload}>
         <Icon icon="ic:outline-cloud-upload" className='text-4xl text-primary-main mx-auto' />
         <p className="text-sm text-slate-800">Drag your file(s) or <span className='text-primary-main font-semibold'>browse</span></p>
         <p className="text-sm text-slate-600">

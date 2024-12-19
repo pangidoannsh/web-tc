@@ -1,5 +1,5 @@
 import { FC, useState } from 'react';
-import Draggable, { PositionDraggable } from './lib/Draggable';
+import Draggable, { PositionDraggable } from './components/ui/Draggable';
 
 const DEFAULT_POS = { x: 0, y: 0 }
 

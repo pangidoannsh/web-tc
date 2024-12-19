@@ -12,7 +12,7 @@ const ChatBubble: FC<Props> = ({ message, type, onClickImage }) => {
     const messageContent = message.text.split("||");
 
     return (
-        <div className={`px-5 py-1 w-full`}>
+        <div className={`px-5 py-1 w-full `}>
             <div className={`p-1 rounded-2xl text-sm min-w-10 w-fit ${isSender ? "ms-auto" : "me-auto"} max-w-[80%] md:max-w-[70%] lg:max-w-[50%] relative
         ${isSender ? "bg-primary-main text-white rounded-tr-none" : "text-slate-800 bg-slate-300 rounded-tl-none"}`}>
                 <div className={`absolute top-0 ${isSender ? "-right-[6px] text-primary-main" : "-left-[6px] text-slate-300"}`}>

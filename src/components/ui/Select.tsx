@@ -13,6 +13,7 @@ interface Props {
     mode?: 'multiple' | 'tags'
     onChange?: (value: string | string[]) => void
     value?: string | string[]
+    className?: string
 }
 // const tagRender: TagRender = (props) => {
 //     const { label, value, closable, onClose } = props;
@@ -33,13 +34,13 @@ interface Props {
 //     );
 // };
 
-const Select: FC<Props> = ({ options, placeolder, label, mode, onChange, value }) => {
+const Select: FC<Props> = ({ options, placeolder, label, mode, onChange, value, className }) => {
 
     const onSearch = (value: string) => {
         console.log('search:', value);
     };
     return (
-        <div className='flex flex-col gap-1'>
+        <div className={`flex flex-col gap-1 ${className}`}>
             {label}
             <AntSelect
                 mode={mode}

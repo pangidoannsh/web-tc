@@ -120,3 +120,48 @@ export type ChatMessageType = {
     type: TypeChat;
     reply: boolean;
 }
+export type Document = {
+    id: string
+    name: string
+    path: string
+    status: string
+}
+export type TicketType = {
+    id: string
+    item: string
+    itemType: string,
+    description: string,
+    status: string,
+    createdAt: string,
+    createdBy: UserType
+    media?: any[]
+}
+
+export type TaskBoardColumn = {
+    status: 'TODO' | 'IN_PROGRESS' | 'DONE'
+    title: string
+}
+
+export type TaskType = {
+    id: string
+    name: string
+    description: string
+    group: {
+        id: string
+        name: string
+    },
+    members: string[]
+    documents: Document
+    status: string
+    endTask: string
+    createdAt: string
+    ticket: TicketType
+}
+
+export type FormTicketType = {
+    name: string
+    type: string
+    category: string
+    description?: string
+    media?: any[]
+}

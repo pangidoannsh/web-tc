@@ -1,5 +1,5 @@
 import { FC, useEffect, useState } from 'react';
-import Draggable, { PositionDraggable } from '../../lib/Draggable';
+import Draggable, { PositionDraggable } from './Draggable';
 import "../../styles/modal.css"
 
 interface Props {

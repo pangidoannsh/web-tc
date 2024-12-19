@@ -17,7 +17,9 @@ const DashboardPage = lazy(() => import('./pages/dashboard'));
 const ChatsPage = lazy(() => import('./pages/Chats'));
 const UsersPage = lazy(() => import('./pages/admin/Users'));
 const GroupsPage = lazy(() => import('./pages/admin/Groups'));
+const GroupTasksPage = lazy(() => import('./pages/admin/GroupTasks'));
 const TasksPage = lazy(() => import('./pages/admin/Tasks'));
+const TicketsPage = lazy(() => import('./pages/admin/Tickets'));
 const LoginPage = lazy(() => import('./pages/Login'));
 
 const router = createBrowserRouter([
@@ -50,13 +52,21 @@ const router = createBrowserRouter([
           },
           {
             path: ":id/tasks",
-            element: <TasksPage />,
+            element: <GroupTasksPage />,
           }
         ]
       },
       {
         path: "/chats",
         element: <ChatsPage />,
+      },
+      {
+        path: "/tasks",
+        element: <TasksPage />,
+      },
+      {
+        path: "/tickets",
+        element: <TicketsPage />,
       },
     ]
   },

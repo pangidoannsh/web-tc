@@ -1,77 +1,99 @@
 import { FC, useEffect, useState } from 'react';
 import Layout from '../../components/Layout';
-import DataTable, { DataTableUtils } from '../../components/ui/DataTable';
-import { ColumnType } from 'antd/es/table';
-import { Icon } from '@iconify/react/dist/iconify.js';
-import { useParams } from 'react-router-dom';
+import "moment/locale/id";
+import { GroupType, TaskBoardColumn, TaskType } from '../../interfaces';
+import { DndContext, DragEndEvent } from '@dnd-kit/core';
+import TaskBoard from '../../components/tasks/TaskBoard';
 import { api } from '../../config/api';
-import { DetailGroupType } from '../../interfaces';
-import { jsonToDetailGroupType } from '../../utils';
+import { jsonToGroupType } from '../../utils';
+import { TASK_GROUP } from '../../const';
+import GroupList from '../../components/tasks/GroupList';
 
-type ParamsType = {
-    id: string
-}
-const columns: ColumnType[] = [
+const columnBoards: TaskBoardColumn[] = [
     {
-        title: 'Task Name',
-        dataIndex: 'name',
-        key: 'name',
+        status: 'TODO',
+        title: 'To Do'
     },
     {
-        title: 'Description',
-        dataIndex: 'admin',
-        key: 'admin',
+        status: 'IN_PROGRESS',
+        title: 'In Progress'
     },
     {
-        title: 'Group',
-        dataIndex: 'group',
-        key: 'group',
-    },
-    {
-        title: 'Progress',
-        dataIndex: 'progress',
-        key: 'progress',
-    },
-    {
-        title: 'Deadline',
-        dataIndex: 'deadline',
-        key: 'deadline',
-    },
-    {
-        title: 'Data Created',
-        dataIndex: 'createdAt',
-        key: 'createdAt',
-    },
-    {
-        title: <Icon icon="solar:settings-linear" className='mx-auto text-xl' />,
-        align: 'center',
-        dataIndex: 'action',
-        key: 'action',
-    },
-];
+        status: 'DONE',
+        title: 'Done'
+    }
+]
 
 const TasksPage: FC = () => {
-    const { id } = useParams<ParamsType>()
-    const [group, setGroup] = useState<DetailGroupType | null>(null)
-    const [tasks, setTasks] = useState<any>([])
-    const [tableUtils, setTableUtils] = useState<DataTableUtils | null>(null)
+    const [selectedGroup, setSelectedGroup] = useState<GroupType>()
+    const [tasks, setTasks] = useState<TaskType[]>([])
+    const [groups, setGroups] = useState<GroupType[]>([])
+
+    function _addTask(status: string) {
+        console.log(status);
+
+    }
+    function _onSelectGroup(group: GroupType) {
+        localStorage.setItem(TASK_GROUP, group.id)
+        setSelectedGroup(group)
+    }
+
+    function handleDragEnd(event: DragEndEvent) {
+        const { active, over } = event;
+
+        if (!over) return;
+
+        const taskId = active.id as string;
+        const newStatus = over.id as TaskType['status'];
+
+        setTasks(() =>
+            tasks.map((task) =>
+                task.id === taskId
+                    ? {
+                        ...task,
+                        status: newStatus,
+                    }
+                    : task,
+            ),
+        );
+    }
     useEffect(() => {
-        api.get(`group/detail/${id}`).then(res => {
-            setGroup(jsonToDetailGroupType(res.data.data));
+        api.get('group/list').then(res => {
+            const resData: any[] = res.data.data.items
+            setGroups(resData.map(jsonToGroupType))
+            const cacheGroupId = localStorage.getItem(TASK_GROUP)
+
+            if (resData.length > 0) {
+                const defaultGroup = resData[0];
+                const group = jsonToGroupType(cacheGroupId
+                    ? resData.find(group => group.id === cacheGroupId)
+                    : defaultGroup);
+                setSelectedGroup(group ?? defaultGroup);
+            }
         })
     }, [])
 
+    useEffect(() => {
+        if (selectedGroup) {
+            api.get(`group/${selectedGroup.id}/tasks`).then(res => {
+                setTasks(res.data.data.items)
+            })
+        }
+    }, [selectedGroup])
+
     return (
         <Layout>
-            <div className="p-6 ">
-                <h2 className='font-semibold text-xl mt-4 mb-5'>Task {group?.name}</h2>
-                <DataTable<any>
-                    getUtils={setTableUtils}
-                    setData={setTasks}
-                    url={`group/${id}/tasks`}
-                    columns={columns}
-                    data={tasks}
-                />
+            <div className="p-6 pb-2 px-8 h-full flex flex-col overflow-visible">
+                <GroupList groups={groups} onSelect={_onSelectGroup} selected={selectedGroup} />
+                <div className="flex-1 flex gap-6 overflow-hidden">
+                    <DndContext onDragEnd={handleDragEnd}>
+                        {columnBoards.map(col =>
+                            <TaskBoard key={col.status} column={col} tasks={tasks.filter(task => task.status === col.status)}
+                                onAddTask={() => _addTask(col.status)}
+                            />
+                        )}
+                    </DndContext>
+                </div>
             </div>
         </Layout>
     );

@@ -19,7 +19,9 @@ export default {
           900: "#062F77",
           main: "#1065AA",
         },
-        ternary: "#EEF2F6"
+        ternary: "#EEF2F6",
+        warning: "#FFC802",
+        success: "#1FBC2C"
       },
       backgroundImage: {
         'background-gradient': 'linear-gradient(to right, #46AAF2 0%, #44A8F0 5%, #3A9EE7 27%, #197FD5 80%)',

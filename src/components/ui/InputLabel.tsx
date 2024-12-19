@@ -1,6 +1,6 @@
-export const inputLabel = (label: string) => (
+export const inputLabel = (label: string, required: boolean = true) => (
     <div className='flex gap-2 items-center'>
-        <span className='text-red-500 text-2xl'>*</span>
+        {required && <span className='text-red-500'>*</span>}
         <span className='font-medium'>{label}</span>
     </div>
 )

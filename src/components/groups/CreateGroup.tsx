@@ -12,7 +12,7 @@ interface Props {
 const titleModal = (
     <div className='flex gap-2 items-center text-slate-800'>
         <Icon icon="basil:user-solid" className='text-xl' />
-        <span className='font-semibold'>Tambah User</span>
+        <span className='font-semibold'>Tambah Group</span>
     </div>
 );
 
