@@ -4,6 +4,7 @@ import InputField from '../ui/InputField';
 import { Icon } from '@iconify/react/dist/iconify.js';
 import { inputLabel } from '../ui/InputLabel';
 import { FormUserType } from '../../interfaces';
+import Button from '../ui/Button';
 
 interface Props {
     isOpen: boolean,
@@ -28,9 +29,9 @@ const FormUser: FC<Props> = ({ isOpen, setIsOpen, titleModal, loading, onSubmit,
             <InputField label={inputLabel("Confirm Password")} name='confirm_password' type='password' className='rounded-md' value={value.confirmPassword}
                 onChange={e => setValue(prev => ({ ...prev, confirmPassword: e.target.value }))} />
             {/* <FileUpload description="Max 10 MB files are allowed" label="Picture" name='avatar' beforeUpload={(file) => { setImage(file); return false; }} /> */}
-            <button type='submit' className='bg-primary-500 hover:bg-primary-600 text-white py-2 px-4 rounded-lg text-sm'>
+            <Button type='submit'>
                 {loading ? <Icon icon="eos-icons:loading" className='text-2xl mx-auto w-max' /> : submitText}
-            </button>
+            </Button>
         </form>
     </Modal>
 );

@@ -11,6 +11,9 @@ export const appThemeConfig: ThemeConfig = {
             optionActiveBg: "#f0f9ff",
             optionSelectedBg: "#e0f2fe",
             optionSelectedColor: "#64748b"
+        },
+        DatePicker: {
+            colorTextPlaceholder: "#94a3b8"
         }
     }
 }

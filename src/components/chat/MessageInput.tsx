@@ -8,7 +8,7 @@ interface Props {
     onSubmit?: () => void
     onChange?: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void
     suffix?: React.ReactNode
-    inputRef: React.RefObject<HTMLTextAreaElement>
+    inputRef?: React.RefObject<HTMLTextAreaElement>
 }
 
 const DEFAULT_HEIGHT = 20

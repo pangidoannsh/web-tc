@@ -124,7 +124,8 @@ export type Document = {
     id: string
     name: string
     path: string
-    status: string
+    type?: string
+    status?: string
 }
 export type TicketType = {
     id: string
@@ -138,7 +139,7 @@ export type TicketType = {
 }
 
 export type TaskBoardColumn = {
-    status: 'TODO' | 'IN_PROGRESS' | 'DONE'
+    status: 'TODO' | 'IN_PROGRESS' | 'DONE' | 'CLOSED'
     title: string
 }
 
@@ -150,12 +151,14 @@ export type TaskType = {
         id: string
         name: string
     },
-    members: string[]
-    documents: Document
+    members: UserType[]
+    documents: Document[]
     status: string
-    endTask: string
-    createdAt: string
+    end_task: string
+    end_type: string
+    created_at: string
     ticket: TicketType
+    assign_type: "ALL" | "MEMBERS" | "PERSONAL"
 }
 
 export type FormTicketType = {
@@ -164,4 +167,33 @@ export type FormTicketType = {
     category: string
     description?: string
     media?: any[]
+}
+
+export type FormTaskType = {
+    name: string
+    end_type: string
+    status: string
+    assign_type: "ALL" | "MEMBERS" | "PERSONAL"
+    group_id: string | null
+    members?: string[]
+    end_task: string
+    description?: string
+    documents?: Document[]
+}
+
+export type TaskLogType = {
+    id: string
+    taskId: string
+    createdBy: UserType
+    description: string
+    createdAt: string
+}
+
+export type SystemSettingsType = {
+    waSupport: boolean
+    waLoggedIn: boolean
+    waNumber?: string
+    waMessageDelay: number
+    discordSupport: boolean
+    discrodToken: string
 }

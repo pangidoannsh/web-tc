@@ -6,6 +6,7 @@ import { Icon } from '@iconify/react/dist/iconify.js';
 import { DefaultOptionType } from 'antd/es/select';
 import { inputLabel } from '../ui/InputLabel';
 import Select from '../ui/Select';
+import Button from '../ui/Button';
 
 const ticketTypeOptions: DefaultOptionType[] = [
     {
@@ -59,9 +60,9 @@ const FormTicket: FC<Props> = ({ isOpen, onClose, titleModal, loading, onSubmit,
                 </div>
                 <InputField as='textarea' name='description' label={inputLabel("Description", false)} value={value?.description} className='rounded-md' placeholder='Description'
                     onChange={(e) => setValue?.(prev => ({ ...prev, description: e.target.value }))} />
-                <button type='submit' className='bg-primary-500 hover:bg-primary-600 text-white py-2 px-4 rounded-lg text-sm'>
+                <Button type='submit'>
                     {loading ? <Icon icon="eos-icons:loading" className='text-2xl mx-auto w-max' /> : submitText}
-                </button>
+                </Button>
             </form>
         </Modal>
     );

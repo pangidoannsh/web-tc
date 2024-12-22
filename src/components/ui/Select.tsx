@@ -12,29 +12,12 @@ interface Props {
     label?: string | ReactNode
     mode?: 'multiple' | 'tags'
     onChange?: (value: string | string[]) => void
-    value?: string | string[]
+    value?: string | string[] | null
     className?: string
+    disabled?: boolean
 }
-// const tagRender: TagRender = (props) => {
-//     const { label, value, closable, onClose } = props;
-//     const onPreventMouseDown = (event: React.MouseEvent<HTMLSpanElement>) => {
-//         event.preventDefault();
-//         event.stopPropagation();
-//     };
-//     return (
-//         <Tag
-//             color="processing"
-//             onMouseDown={onPreventMouseDown}
-//             closable={closable}
-//             onClose={onClose}
-//             style={{ marginInlineEnd: 4 }}
-//         >
-//             {label}
-//         </Tag>
-//     );
-// };
 
-const Select: FC<Props> = ({ options, placeolder, label, mode, onChange, value, className }) => {
+const Select: FC<Props> = ({ options, placeolder, label, mode, onChange, value, className, disabled }) => {
 
     const onSearch = (value: string) => {
         console.log('search:', value);
@@ -43,6 +26,7 @@ const Select: FC<Props> = ({ options, placeolder, label, mode, onChange, value, 
         <div className={`flex flex-col gap-1 ${className}`}>
             {label}
             <AntSelect
+                disabled={disabled}
                 mode={mode}
                 className='text-slate-500'
                 suffixIcon={<Icon icon="ic:baseline-arrow-drop-down" className='text-2xl' />}

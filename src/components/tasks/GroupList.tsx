@@ -20,17 +20,13 @@ const GroupList: FC<Props> = ({ selected, groups, onSelect }) => {
                 content={
                     <div className='flex flex-col py-4'>
                         {groups.map(group => (
-                            <div key={group.id} onClick={() => {
-                                onSelect(group)
-                            }}>
-                                <div className={`flex items-center gap-2 cursor-pointer px-4 py-2 text-sm font-semibold text-slate-60
+                            <div key={group.id} className={`flex items-center gap-2 cursor-pointer px-4 py-2 text-sm font-semibold text-slate-60
                                 ${selected?.id === group.id ? 'bg-sky-100 text-primary-500' : ' hover:text-primary-500'}`}
-                                    onClick={() => {
-                                        onSelect(group)
-                                        setOpen(false)
-                                    }}>
-                                    {group.name}
-                                </div>
+                                onClick={() => {
+                                    onSelect(group)
+                                    setOpen(false)
+                                }}>
+                                {group.name}
                             </div>
                         ))}
                     </div>

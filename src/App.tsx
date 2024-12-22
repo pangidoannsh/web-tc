@@ -20,7 +20,9 @@ const GroupsPage = lazy(() => import('./pages/admin/Groups'));
 const GroupTasksPage = lazy(() => import('./pages/admin/GroupTasks'));
 const TasksPage = lazy(() => import('./pages/admin/Tasks'));
 const TicketsPage = lazy(() => import('./pages/admin/Tickets'));
+const SystemSettingsPage = lazy(() => import('./pages/admin/SystemSettings'));
 const LoginPage = lazy(() => import('./pages/Login'));
+const ProfilePage = lazy(() => import('./pages/Profile'));
 
 const router = createBrowserRouter([
   {
@@ -38,6 +40,10 @@ const router = createBrowserRouter([
       {
         path: "dashboard",
         element: <DashboardPage />,
+      },
+      {
+        path: "system-settings",
+        element: <SystemSettingsPage />,
       },
       {
         path: "users",
@@ -67,6 +73,10 @@ const router = createBrowserRouter([
       {
         path: "/tickets",
         element: <TicketsPage />,
+      },
+      {
+        path: "/profile",
+        element: <ProfilePage />,
       },
     ]
   },

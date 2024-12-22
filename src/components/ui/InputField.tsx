@@ -5,7 +5,7 @@ interface Props {
     suffix?: ReactNode;
     placeholder?: string;
     className?: string;
-    type?: "text" | "password" | "email";
+    type?: "text" | "password" | "email" | "number";
     label?: string | ReactNode;
     name?: string;
     defaultValue?: string;
@@ -15,6 +15,7 @@ interface Props {
     as?: "input" | "textarea";
     height?: number;
     onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+    onBlur?: (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => void
 }
 
 const InputField = forwardRef<HTMLInputElement | HTMLTextAreaElement, Props>(
@@ -34,6 +35,7 @@ const InputField = forwardRef<HTMLInputElement | HTMLTextAreaElement, Props>(
             as = "input",
             height,
             onKeyDown,
+            onBlur
         },
         ref
     ) => {
@@ -44,6 +46,7 @@ const InputField = forwardRef<HTMLInputElement | HTMLTextAreaElement, Props>(
                     {prefix}
                     {as === "textarea" ? (
                         <textarea
+                            onBlur={onBlur as React.FocusEventHandler<HTMLTextAreaElement>}
                             ref={ref as React.Ref<HTMLTextAreaElement>}
                             name={name}
                             defaultValue={defaultValue}
@@ -56,6 +59,7 @@ const InputField = forwardRef<HTMLInputElement | HTMLTextAreaElement, Props>(
                         />
                     ) : (
                         <input
+                            onBlur={onBlur as React.FocusEventHandler<HTMLInputElement>}
                             ref={ref as React.Ref<HTMLInputElement>}
                             name={name}
                             defaultValue={defaultValue}

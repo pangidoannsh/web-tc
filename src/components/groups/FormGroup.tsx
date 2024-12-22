@@ -5,6 +5,7 @@ import InputField from '../ui/InputField';
 import { inputLabel } from '../ui/InputLabel';
 import { Icon } from '@iconify/react/dist/iconify.js';
 import Select from '../ui/Select';
+import Button from '../ui/Button';
 
 interface Props {
     isOpen: boolean,
@@ -40,9 +41,9 @@ const FormGroup: FC<Props> = ({ isOpen, setIsOpen, titleModal, loading, onSubmit
                     onChange={onChangeAdmin} value={value?.admin} />
                 <Select options={users.map(user => ({ label: user, value: user }))} placeolder='List Member' label={inputLabel("Member Group")} mode='multiple'
                     onChange={onChangeMember} value={value?.member} />
-                <button type='submit' className='bg-primary-500 hover:bg-primary-600 text-white py-2 px-4 rounded-lg text-sm'>
+                <Button type='submit'>
                     {loading ? <Icon icon="eos-icons:loading" className='text-2xl mx-auto w-max' /> : submitText}
-                </button>
+                </Button>
             </form>
         </Modal>
     );

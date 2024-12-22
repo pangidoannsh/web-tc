@@ -17,18 +17,41 @@
     width: 4px;
 }
 
+.h-scroll::-webkit-scrollbar {
+    height: 8px;
+}
+
 /* Track */
 .task-scroll::-webkit-scrollbar-track {
     background: transparent !important;
 }
 
-.v-scroll::-webkit-scrollbar-track {
+.v-scroll::-webkit-scrollbar-track,
+.h-scroll::-webkit-scrollbar-track {
     background: white;
 }
 
 /* Handle */
-.v-scroll::-webkit-scrollbar-thumb {
+.v-scroll::-webkit-scrollbar-thumb,
+.h-scroll::-webkit-scrollbar-thumb {
     background: #cbd5e1;
+    border-radius: 4px;
+}
+
+input[type="number"] {
+    -moz-appearance: textfield;
+    /* Firefox */
+    -webkit-appearance: none;
+    /* Chrome, Safari, Edge */
+    appearance: none;
+    /* Generic */
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+    /* Menghapus margin spinner */
 }
 
 .p-highlight .p-inputswitch-slider {
@@ -75,6 +98,10 @@
 
 .task-board.success::before {
     background-color: #16D426;
+}
+
+.task-board.gray::before {
+    background-color: #6b7280;
 }
 
 .ant-select {
@@ -127,4 +154,30 @@
 
 .custom-space .ant-modal {
     top: 24px;
+}
+
+.ant-dropdown-menu-item {
+    padding: 0px !important;
+}
+
+.ant-dropdown-menu {
+    padding: 8px 0px !important;
+}
+
+.ant-dropdown-menu-item-selected,
+.ant-dropdown-menu-item-active {
+    background: none !important;
+}
+
+.ant-picker {
+    background-color: #EEF2F6 !important;
+}
+
+.ant-picker-outlined {
+    border: none !important;
+}
+
+.ant-picker-input input {
+    font-weight: 600 !important;
+    color: #94a3b8 !important;
 }
