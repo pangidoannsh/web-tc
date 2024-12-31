@@ -9,8 +9,8 @@ import FileUpload from '../ui/FileUpload';
 import { UploadChangeParam } from 'antd/es/upload';
 import { API_URL } from '../../const';
 import { useSession } from '../../providers/SessionProvider';
-import moment from 'moment';
 import Button from '../ui/Button';
+import dayjs from 'dayjs';
 
 const statusOptions = [
     {
@@ -138,8 +138,10 @@ const FormTask: FC<Props> = ({ value, setValue, onSubmit, submitText = "Submit",
             }
             <div className="flex flex-col gap-2">
                 {inputLabel("Deadline")}
-                <DatePicker suffixIcon={<Icon icon="lets-icons:date-today-duotone" className='text-lg' />} value={value.end_task ? moment(value.end_task) : null}
-                    onChange={(_, dateString) => setValue(prev => ({ ...prev, end_task: dateString as string }))} />
+                <DatePicker suffixIcon={<Icon icon="lets-icons:date-today-duotone" className='text-lg' />}
+                    value={value.end_task ? dayjs(value.end_task) : null}
+                    onChange={(_, dateString) => setValue(prev => ({ ...prev, end_task: dateString as string }))}
+                />
             </div>
             <InputField as='textarea' label={inputLabel("Description")} placeholder='Description' onChange={e => setValue(prev => ({ ...prev, description: e.target.value }))}
                 value={value.description} className='rounded-md' />

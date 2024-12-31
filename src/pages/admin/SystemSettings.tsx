@@ -26,41 +26,39 @@ const SystemSettingsPage: FC = () => {
         </div>
     )
     return (
-        <SettingsLayout>
-            <div className='px-10 py-6 max-w-xl'>
-                <h2 className='font-semibold text-xl text-primary-main'>System Settings</h2>
-                <h4 className='font-medium text-primary-main mt-10'>Whatsapp</h4>
-                <div className="flex flex-col gap-3 mt-3">
-                    {settingMenu("Whatsapp Support", <Checkbox checked={settings.waSupport} />)}
-                    {settingMenu(<>
-                        <div>Wa Logged In</div>
-                        <div className='text-xs font-medium text-primary-main mt-0.5'>Whatsapp Number: {settings.waNumber}</div>
-                    </>, <div>
-                        <button className='text-primary-500 font-bold py-1 hover:bg-sky-50 rounded-md px-2 duration-200'>Login</button>
-                    </div>)}
-                    {settingMenu("Whatsapp Message Delay (seconds)",
-                        <div className='flex'>
-                            <InputField className='rounded-md w-10 text-sm !py-1 !px-2 overflow-hidden' value={settings.waMessageDelay.toString()}
-                                onChange={onChangeWaDelay} type='number' />
-                        </div>
-                    )}
-                </div>
-                <h4 className='font-medium text-primary-main mt-10'>Discord</h4>
-                <div className="flex flex-col gap-3 mt-3">
-
-                    {settingMenu("Whatsapp Support", <Checkbox checked={settings.discordSupport} />)}
-
-                    {settingMenu("Whatsapp Message Delay (seconds)",
-                        <div className='flex'>
-                            <InputField as='textarea' className='rounded-md text-sm !py-1 !px-2 overflow-hidden' value={settings.discrodToken}
-                                onChange={e => setSettings(prev => ({ ...prev, discrodToken: e.target.value }))} />
-                        </div>
-                    )}
-                </div>
-                <Button className='w-full mt-6'>
-                    Save
-                </Button>
+        <SettingsLayout className='max-w-xl'>
+            <h2 className='font-semibold text-xl text-primary-main'>System Settings</h2>
+            <h4 className='font-medium text-primary-main mt-10'>Whatsapp</h4>
+            <div className="flex flex-col gap-3 mt-3">
+                {settingMenu("Whatsapp Support", <Checkbox checked={settings.waSupport} />)}
+                {settingMenu(<>
+                    <div>Wa Logged In</div>
+                    <div className='text-xs font-medium text-primary-main mt-0.5'>Whatsapp Number: {settings.waNumber}</div>
+                </>, <div>
+                    <button className='text-primary-500 font-bold py-1 hover:bg-sky-50 rounded-md px-2 duration-200'>Login</button>
+                </div>)}
+                {settingMenu("Whatsapp Message Delay (seconds)",
+                    <div className='flex'>
+                        <InputField className='rounded-md w-10 text-sm !py-1 !px-2 overflow-hidden' value={settings.waMessageDelay.toString()}
+                            onChange={onChangeWaDelay} type='number' />
+                    </div>
+                )}
             </div>
+            <h4 className='font-medium text-primary-main mt-10'>Discord</h4>
+            <div className="flex flex-col gap-3 mt-3">
+
+                {settingMenu("Whatsapp Support", <Checkbox checked={settings.discordSupport} />)}
+
+                {settingMenu("Whatsapp Message Delay (seconds)",
+                    <div className='flex'>
+                        <InputField as='textarea' className='rounded-md text-sm !py-1 !px-2 overflow-hidden' value={settings.discrodToken}
+                            onChange={e => setSettings(prev => ({ ...prev, discrodToken: e.target.value }))} />
+                    </div>
+                )}
+            </div>
+            <Button className='w-full mt-6'>
+                Save
+            </Button>
         </SettingsLayout>
     );
 };

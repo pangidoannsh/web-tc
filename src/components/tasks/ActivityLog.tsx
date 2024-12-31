@@ -3,14 +3,14 @@ import Avatar from '../ui/Avatar';
 import { useSession } from '../../providers/SessionProvider';
 import MessageInput from '../chat/MessageInput';
 import { TaskLogType } from '../../interfaces';
-import moment from 'moment';
+import dayjs from 'dayjs';
 
 interface Props {
     className?: string
 }
 const ActivityLog: FC<Props> = ({ className }) => {
     const { session } = useSession()
-    const [logs, setLogs] = useState<TaskLogType[]>([{
+    const [logs] = useState<TaskLogType[]>([{
         id: "1",
         taskId: "1",
         createdAt: "2022-01-01",
@@ -42,7 +42,7 @@ const ActivityLog: FC<Props> = ({ className }) => {
                                 <span className='text-slate-700 font-bold me-1'>{log.createdBy.name}</span>
                                 {log.description}
                             </div>
-                            <div className='text-xs text-slate-500'>{moment(log.createdAt).format("MMM DD, YYYY HH:mm")}</div>
+                            <div className='text-xs text-slate-500'>{dayjs(log.createdAt).format("MMM DD, YYYY HH:mm")}</div>
                         </div>
                     </div>
                 )

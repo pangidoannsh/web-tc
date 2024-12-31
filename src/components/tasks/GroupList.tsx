@@ -1,6 +1,6 @@
-import { FC, useState } from 'react';
+import { FC } from 'react';
 import { GroupType } from '../../interfaces';
-import { Popover } from 'antd';
+import { Dropdown } from 'antd';
 import { Icon } from '@iconify/react/dist/iconify.js';
 
 interface Props {
@@ -9,35 +9,28 @@ interface Props {
     onSelect: (group: GroupType) => void
 }
 const GroupList: FC<Props> = ({ selected, groups, onSelect }) => {
-    const [open, setOpen] = useState(false)
     return (
         <div>
-            <Popover
-                open={open}
-                trigger="click"
-                placement='bottomLeft'
-                arrow={false}
-                content={
-                    <div className='flex flex-col py-4'>
-                        {groups.map(group => (
-                            <div key={group.id} className={`flex items-center gap-2 cursor-pointer px-4 py-2 text-sm font-semibold text-slate-60
-                                ${selected?.id === group.id ? 'bg-sky-100 text-primary-500' : ' hover:text-primary-500'}`}
-                                onClick={() => {
-                                    onSelect(group)
-                                    setOpen(false)
-                                }}>
+            <Dropdown trigger={['click']}
+                menu={{
+                    items: groups.map(group => ({
+                        key: group.id,
+                        onClick: () => onSelect(group),
+                        label: (
+                            <div className={`flex items-center gap-2 cursor-pointer px-4 py-2 text-sm font-semibold text-slate-60
+                            ${selected?.id === group.id ? 'bg-sky-100 text-primary-500' : ' hover:text-primary-500'}`}>
                                 {group.name}
                             </div>
-                        ))}
-                    </div>
-                }>
-                <button className='flex gap-2 mb-4' onClick={() => setOpen(true)}>
+                        )
+                    }))
+                }}>
+                <button className='flex gap-2 mb-4'>
                     <span className='font-semibold text-lg'>{selected?.name ?? ""}</span>
                     <div className="p-1 rounded-full bg-slate-100">
                         <Icon icon="ic:round-keyboard-arrow-down" className='text-lg text-slate-500' />
                     </div>
                 </button>
-            </Popover>
+            </Dropdown>
         </div>
     );
 };

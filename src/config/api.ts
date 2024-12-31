@@ -41,7 +41,7 @@ api.interceptors.response.use(
     async (error) => {
         const originalRequest = error.config;
 
-        if (error.response?.status === 401 && !originalRequest._retry && error.response.data.rc === "005") {
+        if (error.response?.status === 401 && !originalRequest._retry && error.response.data.rc === "003") {
             if (isRefreshing) {
                 return new Promise((resolve) => {
                     subscribeTokenRefresh(newToken => {

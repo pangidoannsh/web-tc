@@ -1,6 +1,5 @@
 import { FC, useEffect, useState } from 'react';
 import Layout from '../../components/Layout';
-import "moment/locale/id";
 import { FormTaskType, GroupType, TaskBoardColumn, TaskType, UserType } from '../../interfaces';
 import { DndContext, DragEndEvent } from '@dnd-kit/core';
 import TaskBoard from '../../components/tasks/TaskBoard';

@@ -1,22 +1,24 @@
 import { FC, Fragment, useEffect, useRef, useState } from 'react';
-import { ChatMessageType, UserType } from '../../interfaces';
+import { ChatMessage, ChatRoom, UserType } from '../../interfaces';
 import Avatar from '../ui/Avatar';
 import { Icon } from '@iconify/react/dist/iconify.js';
 import ChatActionBar from './ChatActionBar';
 import Logo from "../../assets/images/logo.png"
 import ChatBubble from './ChatBubble';
-import moment from 'moment';
 import { formatDateChatDivider, groupByTime } from '../../utils';
 import { UploadChangeParam, UploadFile, UploadProps } from 'antd/es/upload';
 import PreviewFile from './PreviewFile';
 import ImageModal from './ImageModal';
-import { BASE_URL } from '../../const';
+import { MEDIA_URL } from '../../const';
 import CallModal from './CallModal';
 import Dragger from 'antd/es/upload/Dragger';
+import dayjs from 'dayjs';
+import { useSession } from '../../providers/SessionProvider';
 
 interface Props {
+    room: ChatRoom | null
     user: UserType | null
-    messages: ChatMessageType[]
+    messages: ChatMessage[]
     onSendMessage: () => void
     messageInput: string
     setMessageInput: React.Dispatch<React.SetStateAction<string>>
@@ -30,7 +32,8 @@ interface Props {
 }
 let counter = 0
 const ChatContent: FC<Props> = ({ messages, user, onSendMessage, messageInput, setMessageInput, chatActionInputRef, uploadProps, openPreviewFile, previewFilePath,
-    setOpenPreviewFile, autoScrolling }) => {
+    setOpenPreviewFile, autoScrolling, room }) => {
+    const { session } = useSession()
     const containerRef = useRef<HTMLDivElement>(null);
     const [openCall, setOpenCall] = useState(false)
     const [isDraggingFile, setIsDraggingFile] = useState(false)
@@ -38,6 +41,7 @@ const ChatContent: FC<Props> = ({ messages, user, onSendMessage, messageInput, s
         open: false,
         src: ""
     })
+
     const groupMessage = Object.entries(
         groupByTime("timestamp", messages)
     )
@@ -45,7 +49,7 @@ const ChatContent: FC<Props> = ({ messages, user, onSendMessage, messageInput, s
     function showImageFullscreen(src: string) {
         setShowImage({
             open: true,
-            src: BASE_URL + src
+            src: MEDIA_URL + src
         })
     }
     const handleDragEnter = () => {
@@ -112,8 +116,10 @@ const ChatContent: FC<Props> = ({ messages, user, onSendMessage, messageInput, s
                                             message={{
                                                 id: message.id,
                                                 text: message.content,
-                                                isSender: message.senderId !== user.id,
-                                                time: moment(message.timestamp).format("hh:mm A")
+                                                isSender: message.sender_id === session?.user?.id,
+                                                time: dayjs(message.timestamp).format("hh:mm A"),
+                                                path: message.path,
+                                                userName: message.sender_name
                                             }} />)}
                                     </div>
                                 </Fragment>
@@ -132,7 +138,7 @@ const ChatContent: FC<Props> = ({ messages, user, onSendMessage, messageInput, s
                 <div className='text-2xl font-semibold text-slate-500 text-center'>Select a chat to start messaging</div>
             </div>
         }
-        <CallModal open={openCall} username={user?.name!} onEndCall={() => setOpenCall(false)} />
+        <CallModal open={openCall} room={room} username={user?.name!} onEndCall={() => setOpenCall(false)} />
     </div>
 };
 

@@ -10,6 +10,19 @@ interface Props {
     isShrink: boolean
 }
 
+const settingsMenu = [
+    {
+        label: "Profile",
+        icon: "cuida:edit-outline",
+        path: "/profile",
+    },
+    {
+        label: "System Settings",
+        icon: "tdesign:system-setting",
+        path: "/system-settings",
+        onlyAdmin: true
+    }
+]
 const Header: FC<Props> = ({ onClickShrink, isShrink }) => {
     const { session } = useSession();
     const user = session?.user!;
@@ -34,12 +47,11 @@ const Header: FC<Props> = ({ onClickShrink, isShrink }) => {
                             <div className='flex flex-col py-3 w-72'>
                                 <div className='flex flex-col gap-1'>
                                     <div className='px-4 font-bold text-xs'>Settings</div>
-                                    <Link to="/profile" className='text-xs font-medium text-slate-500 hover:text-primary-500 hover:bg-sky-100 flex items-center gap-2 px-4 py-2 dropdown-item'>
-                                        <span>Profile</span>
-                                    </Link>
-                                    <Link to="/system-settings" className='text-xs font-medium text-slate-500 hover:text-primary-500 hover:bg-sky-100 flex items-center gap-2 px-4 py-2 dropdown-item'>
-                                        <span>System</span>
-                                    </Link>
+                                    {settingsMenu.map((menu) => menu.onlyAdmin && user.role !== "ROLE_ADMIN" ? "" :
+                                        <Link key={menu.path} to={menu.path} className='text-xs font-medium text-slate-500 hover:text-primary-500 hover:bg-sky-100 flex items-center gap-2 px-4 py-2 dropdown-item'>
+                                            <span>{menu.label}</span>
+                                        </Link>)
+                                    }
                                 </div>
                                 <hr />
                                 <button className='text-xs font-medium text-slate-500 hover:text-primary-500 hover:bg-sky-100 flex items-center gap-2 px-4 py-2 dropdown-item' onClick={() => setShowLogoutDialoge(true)}>

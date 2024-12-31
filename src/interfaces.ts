@@ -17,11 +17,17 @@ export type ChatType = {
     type?: string
 }
 
+export type ChatRoomType = "personal" | "group"
+
 export type MessageType = {
     id: string,
     text: string,
     isSender: boolean,
+    path?: string
     time: string,
+    isGroupMessage?: boolean
+    userName: string
+    userImage?: string
 }
 export type UserType = {
     id: string,
@@ -68,7 +74,7 @@ export type DetailGroupType = {
 export type FormGroupType = {
     name: string,
     admin: string,
-    member: string[]
+    members: string[]
 }
 
 export type TablePaginationType = {
@@ -81,34 +87,36 @@ export type TablePaginationType = {
 
 export type ChatMessage = {
     id: string;
-    clientChatId: string;
-    senderId: string;
-    recipientId: string;
+    chat_room_id: string;
+    path?: string;
+    sender_id: string;
+    sender_name: string;
+    recipient_id: string;
+    reply_chat_id?: string;
     content: string;
     status: "DELIVERED" | "SENT" | "READ";
-    replyChatId: string;
+    reply_chat_Id: string;
     timestamp: string;
-    chatRoomId: string;
-    type: "TEXT" | "IMAGE" | "VIDEO" | "FILE";
+    type: "TEXT" | "IMAGE" | "VIDEO" | "FILE" | "CALL" | "NOTIFICATION";
     reply: boolean;
 };
 
 export type ChatRoom = {
     id: string;
-    chatRoomId: string;
-    senderId: string;
-    recipientId: string;
-    senderName: string;
-    senderUsername: string;
-    recipientName: string;
-    recipientUsername: string;
-    latestChatMessage: ChatMessage;
+    room_id: string;
+    avatar: string | null;
+    name: string;
+    online: boolean;
+    type: ChatRoomType;
+    unread: number;
+    last_message: ChatMessage;
 };
 
 export type TypeChat = "TEXT" | "IMAGE" | "VIDEO" | "FILE"
 
 export type ChatMessageType = {
     id: string;
+    chat_room_id: string;
     clientChatId: string;
     senderId: string;
     recipientId: string;
@@ -120,6 +128,7 @@ export type ChatMessageType = {
     type: TypeChat;
     reply: boolean;
 }
+
 export type Document = {
     id: string
     name: string

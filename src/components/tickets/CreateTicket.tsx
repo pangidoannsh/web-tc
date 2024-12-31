@@ -6,7 +6,7 @@ import { Icon } from '@iconify/react/dist/iconify.js';
 
 const titleModal = (
     <div className='flex gap-2 items-center text-slate-800'>
-        <Icon icon="solar:ticket-broken" className='text-xl' />
+        <Icon icon="solar:ticket-linear" className='text-xl' />
         <span className='font-semibold'>Tambah Ticket</span>
     </div>
 );

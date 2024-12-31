@@ -24,7 +24,7 @@ const CreateGroup: FC<Props> = ({ onSuccess }) => {
     const [form, setForm] = useState<FormGroupType>({
         name: '',
         admin: '',
-        member: []
+        members: []
     })
 
     function handleSubmit(e: FormEvent<HTMLFormElement>) {
@@ -42,7 +42,6 @@ const CreateGroup: FC<Props> = ({ onSuccess }) => {
     useEffect(() => {
         api.get('/users/list').then(res => {
             setUsers(res.data.data.items.map(jsonToUserType))
-
         }).catch(err => {
             console.log(err);
         })
@@ -53,8 +52,8 @@ const CreateGroup: FC<Props> = ({ onSuccess }) => {
             <button className='bg-primary-500 hover:bg-primary-600 text-white py-2 px-4 rounded-lg text-sm' onClick={() => setIsOpen(true)}>
                 Tambah Group
             </button>
-            <FormGroup isOpen={isOpen} setIsOpen={setIsOpen} titleModal={titleModal} loading={loading} onSubmit={handleSubmit} users={users.map(user => user.username)}
-                setValue={setForm} value={form} />
+            <FormGroup isOpen={isOpen} setIsOpen={setIsOpen} titleModal={titleModal} loading={loading} onSubmit={handleSubmit}
+                users={users} setValue={setForm} value={form} />
         </>
     );
 };

@@ -1,5 +1,5 @@
 import { ChangeEvent, Dispatch, FC, FormEvent, ReactNode, SetStateAction } from 'react';
-import { FormGroupType } from '../../interfaces';
+import { FormGroupType, UserType } from '../../interfaces';
 import { Modal } from 'antd';
 import InputField from '../ui/InputField';
 import { inputLabel } from '../ui/InputLabel';
@@ -15,7 +15,7 @@ interface Props {
     onSubmit: (e: FormEvent<HTMLFormElement>) => void
     value?: FormGroupType
     submitText?: string
-    users?: string[]
+    users?: UserType[]
     setValue?: Dispatch<SetStateAction<FormGroupType>>
 }
 
@@ -37,10 +37,10 @@ const FormGroup: FC<Props> = ({ isOpen, setIsOpen, titleModal, loading, onSubmit
             <form onSubmit={onSubmit} className='flex flex-col gap-4 mt-5'>
                 <InputField placeholder='Masukkan Nama Group' label={inputLabel("Nama Group")} name='name' className='rounded-md' value={value?.name}
                     onChange={onChangeName} />
-                <Select options={users.map(user => ({ label: user, value: user }))} placeolder='Pilih Admin Group' label={inputLabel("Admin Group")}
+                <Select options={users.map(user => ({ label: user.name, value: user.id }))} placeolder='Pilih Admin Group' label={inputLabel("Admin Group")}
                     onChange={onChangeAdmin} value={value?.admin} />
-                <Select options={users.map(user => ({ label: user, value: user }))} placeolder='List Member' label={inputLabel("Member Group")} mode='multiple'
-                    onChange={onChangeMember} value={value?.member} />
+                <Select options={users.map(user => ({ label: user.name, value: user.id }))} placeolder='List Member' label={inputLabel("Member Group")} mode='multiple'
+                    onChange={onChangeMember} value={value?.members} />
                 <Button type='submit'>
                     {loading ? <Icon icon="eos-icons:loading" className='text-2xl mx-auto w-max' /> : submitText}
                 </Button>

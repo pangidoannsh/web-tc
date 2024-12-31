@@ -1,24 +1,20 @@
 import { FC, useEffect, useRef, useState } from 'react';
-import { ChatMessageType, ChatRoom, TypeChat, UserType } from '../interfaces';
+import { ChatMessage, ChatRoom, ChatRoomType, TypeChat, UserType } from '../interfaces';
 import ChatList from '../components/chat/ChatList';
 import SidebarHeader from '../components/chat/SidebarHeader';
 import ChatContent from '../components/chat/ChatContent';
 import { api } from '../config/api';
 import ContactContent from '../components/chat/ContactContent';
-import SockJS from "sockjs-client";
 import { API_URL, STOMP_URL } from '../const';
-import { Client } from '@stomp/stompjs';
 import { useSession } from '../providers/SessionProvider';
-import moment from 'moment';
-import { v4 as uuidv4 } from 'uuid';
 import { UploadChangeParam, UploadProps } from 'antd/es/upload';
 import { useNotif } from '../providers/NotifProvider';
 import { Spin } from 'antd';
 import Layout from '../components/Layout';
+import dayjs from 'dayjs';
 
 const ChatsPage: FC = () => {
     const isMounted = useRef(false)
-    const socketClient = useRef<Client | null>(null)
     const searchContactRef = useRef<HTMLInputElement | null>(null)
     const chatActionInputRef = useRef<HTMLTextAreaElement | null>(null)
     const { session } = useSession()
@@ -28,7 +24,7 @@ const ChatsPage: FC = () => {
     const [chatLists, setChatLists] = useState<ChatRoom[]>([])
     const [openContact, setOpenContact] = useState(false)
     const [contactList, setContactList] = useState<UserType[]>([])
-    const [messages, setMessages] = useState<ChatMessageType[]>([])
+    const [messages, setMessages] = useState<ChatMessage[]>([])
     const [messageInput, setMessageInput] = useState("")
 
     const [openPreviewFile, setOpenPreviewFile] = useState(false)
@@ -60,10 +56,25 @@ const ChatsPage: FC = () => {
         }
     }
 
-    const chatRoom = async (chatRoomId: string) => {
-        api.get("chat/room/" + chatRoomId + "/messages").then(res => {
-            setMessages(res?.data?.data);
-        })
+    const getMessagesChatRoom = async (room_id: string, type: ChatRoomType) => {
+        if (type === "group") {
+            api.get("chat/group/" + room_id).then(res => {
+                setMessages(res?.data?.data.messages ?? []);
+                const room = res?.data?.data.room
+                setSelectedUser({
+                    id: room.id,
+                    name: room.name,
+                    avatar: room.avatar,
+                    role: "ROLE_USER",
+                    status: true,
+                    username: room.name
+                })
+            })
+        } else {
+            api.get("chat/room/" + room_id).then(res => {
+                setMessages(res?.data?.data.messages ?? []);
+            })
+        }
     };
 
     function getUserDetail(id: string) {
@@ -73,24 +84,26 @@ const ChatsPage: FC = () => {
     }
     function getChatList() {
         api.get("chat/room").then(res => {
-            const data: ChatRoom[] = res.data.data;
-            setChatLists(data.sort((a, b) => moment(b.latestChatMessage.timestamp).isBefore(moment(a.latestChatMessage.timestamp)) ? -1 : 1))
+            const data: ChatRoom[] = res.data.data ?? [];
+            setChatLists(data.sort((a, b) => dayjs(b.last_message.timestamp).isBefore(dayjs(a.last_message.timestamp)) ? -1 : 1))
         }).catch(err => {
             console.log(err);
         })
     }
 
     function handleClickItemChat(chat: ChatRoom) {
-        if (chat.chatRoomId === selectedChat?.chatRoomId) return
+        if (chat.room_id === selectedChat?.room_id) return
         setOpenPreviewFile(false)
         setSelectedChat(chat)
         setMessages([])
-        const user = contactList.find(c => c.id === chat.senderId)
-        chatRoom(chat.chatRoomId)
-        if (user) {
-            setSelectedUser(user)
-        } else {
-            getUserDetail(chat.senderId)
+        const user = contactList.find(c => c.id === chat.id)
+        getMessagesChatRoom(chat.room_id, chat.type)
+        if (chat.type == "personal") {
+            if (user) {
+                setSelectedUser(user)
+            } else {
+                getUserDetail(chat.id)
+            }
         }
         chatActionInputRef.current?.focus()
     }
@@ -98,12 +111,12 @@ const ChatsPage: FC = () => {
     function handleNewChat(user: UserType) {
         setSelectedUser(user)
 
-        const chat = chatLists.find(c => c.senderId === user.id || c.recipientId === user.id)
+        const chat = chatLists.find(c => c.id === user.id || c.last_message.recipient_id === user.id)
         setOpenPreviewFile(false)
 
         if (chat) {
             setSelectedChat(chat)
-            chatRoom(chat.chatRoomId)
+            getMessagesChatRoom(chat.room_id, "personal")
         } else {
             setSelectedChat(null)
             setMessages([])
@@ -118,52 +131,47 @@ const ChatsPage: FC = () => {
     }
 
     function getContactList() {
-        api.get("users/contact/list").then(res => setContactList(res.data.data))
+        api.get("users/contact/list").then(res => setContactList(res.data.data ?? []))
     }
 
-    function _sendMessage(content: any, type: TypeChat) {
-        const clientChatId = uuidv4()
-        const newMessage: ChatMessageType = {
-            id: uuidv4(),
-            chatRoomId: selectedChat?.chatRoomId || "",
-            clientChatId,
-            senderId: session?.user?.id || "",
-            recipientId: selectedUser?.id || "",
+    function _sendMessage(content: any, type: TypeChat, path?: string | null) {
+        const newMessage = {
             content,
-            status: "SENT",
-            replyChatId: "",
-            timestamp: new Date().toISOString(),
+            is_reply: 0,
+            path,
+            reply_chat_Id: "",
+            sender_id: session?.user?.id || "",
+            sender_name: session?.user?.name || "",
             type,
-            reply: false,
+        }
+        if (selectedChat) {
+            let endpoint = "chat/room/" + selectedChat?.room_id;
+
+            if (selectedChat.type === "group") {
+                endpoint = "chat/group/" + selectedChat?.room_id
+            }
+
+            api.post(endpoint, newMessage).then(_ => {
+                // CURRENT REFRESH ALL
+                getChatList()
+            }).catch(err => {
+                console.log(err);
+            })
+        } else {
+            // For send message at first time
+            api.post("chat/first/" + selectedUser!.id, newMessage)
         }
 
-        setMessages(prev => [newMessage, ...prev])
-
-        socketClient.current?.publish({
-            destination: "/app/personal/chat",
-            body: JSON.stringify({
-                clientChatId,
-                senderId: session?.user?.id,
-                recipientId: selectedUser?.id,
-                content,
-                isReply: false,
-                replyChatId: "",
-                type,
-                path: "",
-                localPath: "",
-            }),
-        })
-        getChatList()
     }
 
     function handleSendMessage() {
         setAutoScrollingChatContainer(true)
         if (openPreviewFile) {
             if (!fileUpload) return
-            _sendMessage(`${fileUpload.name}||${responseFile}${messageInput.trim() != "" ? `||${messageInput}` : ""}`, "FILE")
+            const extensionFile = fileUpload.type.split("/")[0]
+            _sendMessage(messageInput, extensionFile.toUpperCase() as TypeChat, responseFile)
             setOpenPreviewFile(false)
             setPreviewImage("")
-
         } else {
             _sendMessage(messageInput, "TEXT")
         }
@@ -171,42 +179,30 @@ const ChatsPage: FC = () => {
     }
 
     const uploadFileProps: UploadProps = {
-        action: `${API_URL}chat/room/${selectedChat?.chatRoomId}/upload`,
+        action: `${API_URL}media`,
         headers: { authorization: `Bearer ${session?.accessToken}` },
         onChange: handleChangeFileUpload,
     }
 
     useEffect(() => {
-        const sock = new SockJS(STOMP_URL);
-        const newClient = new Client({
-            webSocketFactory: () => sock,
-            onConnect: () => {
-                newClient.subscribe(
-                    `/user/${session?.user?.id}/queue/messages`,
-                    async (message) => {
-                        setAutoScrollingChatContainer(false)
-                        const body = JSON.parse(message.body);
-                        if (body.chatRoomId === selectedChat?.chatRoomId) {
-                            setMessages(prev => [...prev, body])
-                        }
-                        getChatList()
-                    }
-                );
-
-            },
-            onStompError: (frame) => {
-                console.error("Broker error:", frame.headers["message"]);
-            },
-        })
-        newClient.activate();
-        socketClient.current = newClient
-        setAutoScrollingChatContainer(true)
-
-        return () => {
-            sock.close()
-            newClient.deactivate()
+        const socket = new WebSocket(STOMP_URL + `/notification?access_token=${session?.accessToken}`)
+        socket.onclose = () => {
+            console.log('websocket closed');
         }
-    }, [selectedChat])
+        socket.onmessage = (res) => {
+            if (!res) return
+
+            const resData = JSON.parse(res.data)
+            console.log(resData);
+            if (resData.type === "NEW_CHAT") {
+                setChatLists(prev => [...prev, resData.data])
+            } else {
+                if (resData.data.type === "CHAT") {
+                    setMessages(prev => [...prev, resData.data])
+                }
+            }
+        }
+    }, [])
 
     useEffect(() => {
         if (!isMounted.current) {
@@ -237,7 +233,7 @@ const ChatsPage: FC = () => {
                     </div>
                     <ContactContent isOpen={openContact} setIsOpen={setOpenContact} onNewChat={handleNewChat} contact={contactList} searchRef={searchContactRef} />
                 </div>
-                <ChatContent messages={messages} user={selectedUser} onSendMessage={handleSendMessage} messageInput={messageInput} setMessageInput={setMessageInput}
+                <ChatContent room={selectedChat} messages={messages} user={selectedUser} onSendMessage={handleSendMessage} messageInput={messageInput} setMessageInput={setMessageInput}
                     chatActionInputRef={chatActionInputRef} onChangeFile={handleChangeFileUpload} uploadProps={uploadFileProps} openPreviewFile={openPreviewFile}
                     setOpenPreviewFile={setOpenPreviewFile} previewFilePath={previewImage} autoScrolling={autoScrollingChatContainer}
                 />

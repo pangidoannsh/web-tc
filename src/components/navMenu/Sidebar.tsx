@@ -43,7 +43,7 @@ const menus: NavMenuType[] = [
     },
     {
         label: "Tickets",
-        icon: "icon-park-outline:tickets-checked",
+        icon: "solar:ticket-linear",
         path: "/tickets",
         access: ["ROLE_ADMIN"]
     },

@@ -1,6 +1,5 @@
+import dayjs from "dayjs";
 import { DetailGroupType, GroupType, UserType } from "./interfaces";
-import moment from "moment";
-import "moment/locale/id";
 
 export function jsonToUserType(jsonData: any): UserType {
     return {
@@ -39,11 +38,11 @@ export function jsonToDetailGroupType(jsonData: any): DetailGroupType {
 }
 
 export const chatTimeFormat = (timestamp: string): string => {
-    const messageDate = moment(timestamp);
+    const messageDate = dayjs(timestamp);
 
-    if (messageDate.isSame(moment(), 'day')) {
+    if (messageDate.isSame(dayjs(), 'day')) {
         return messageDate.format("HH:mm");
-    } else if (messageDate.isSame(moment().subtract(1, 'day'), 'day')) {
+    } else if (messageDate.isSame(dayjs().subtract(1, 'day'), 'day')) {
         return "Kemarin";
     } else {
         return messageDate.format("DD MMM");
@@ -61,7 +60,7 @@ type GroupedData<T> = {
  * @returns An object grouped by formatted date.
  */
 export function groupByTime<T>(key: keyof T, data: T[]): GroupedData<T> {
-    const sortedData = data.sort((a, b) => moment(a[key] as string).isBefore(moment(b[key] as string)) ? -1 : 1);
+    const sortedData = data.sort((a, b) => dayjs(a[key] as string).isBefore(dayjs(b[key] as string)) ? -1 : 1);
     if (!Array.isArray(data)) {
         throw new Error("Input data must be an array");
     }
@@ -71,6 +70,7 @@ export function groupByTime<T>(key: keyof T, data: T[]): GroupedData<T> {
     };
 
     return sortedData.reduce((result: GroupedData<T>, item: T) => {
+        if (!item) return {}
         const timestamp = item[key];
 
         if (!timestamp || !(typeof timestamp === "string" || timestamp instanceof Date || typeof timestamp === "number")) {

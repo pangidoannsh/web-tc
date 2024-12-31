@@ -9,9 +9,8 @@ import { jsonToGroupType } from '../../utils';
 import CreateGroup from '../../components/groups/CreateGroup';
 import EditGroup from '../../components/groups/EditGroup';
 import DataTable, { DataTableUtils } from '../../components/ui/DataTable';
-import moment from 'moment';
 import { Link } from 'react-router-dom';
-
+import dayjs from 'dayjs';
 
 const columns: ColumnType[] = [
     {
@@ -107,7 +106,7 @@ const GroupsPage: FC = () => {
                 <span className='text-sm font-semibold'>{totalTask}</span>
             </Link>,
             status: <Switch checked={status} onChange={(checked: boolean) => _handleSwitchStatus(id, checked)} />,
-            createdAt: moment(data.createdAt).format('DD MMMM YYYY'),
+            createdAt: dayjs(data.createdAt).add(1, 'month').format('DD MMMM YYYY'),
             action: <div className='flex gap-2 justify-center'>
                 <button onClick={() => _handleClickEdit(data)}>
                     <Icon icon="cuida:edit-outline" className='text-primary-500 text-2xl' />

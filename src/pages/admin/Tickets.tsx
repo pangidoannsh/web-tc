@@ -3,13 +3,13 @@ import { ColumnType } from 'antd/es/table';
 import { FC, useState } from 'react';
 import { TicketType } from '../../interfaces';
 import DataTable, { DataTableUtils } from '../../components/ui/DataTable';
-import moment from 'moment';
 import Layout from '../../components/Layout';
 import { Popover } from 'antd';
 import CreateTicket from '../../components/tickets/CreateTicket';
 import { api } from '../../config/api';
 import { useNotif } from '../../providers/NotifProvider';
 import EditTicket from '../../components/tickets/EditTicket';
+import dayjs from 'dayjs';
 
 const columns: ColumnType[] = [
     {
@@ -94,7 +94,7 @@ const TicketsPage: FC = () => {
             ${data.status === 'OPEN' ? 'text-primary-main bg-primary-100' : 'bg-slate-100 text-slate-500'}`}>
                 {data.status}
             </div>,
-            createdAt: moment(data.createdAt).locale('id').format('DD MMMM YYYY'),
+            createdAt: dayjs(data.createdAt).locale('id').format('DD MMMM YYYY'),
             action: <div className='flex gap-2 justify-center'>
                 <button onClick={() => _onClickEditTicket(data)}>
                     <Icon icon="cuida:edit-outline" className='text-primary-500 text-2xl' />

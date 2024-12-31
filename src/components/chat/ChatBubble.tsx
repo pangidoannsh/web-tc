@@ -1,6 +1,7 @@
 import { FC } from 'react';
 import { MessageType } from '../../interfaces';
-import { BASE_URL } from '../../const';
+import { MEDIA_URL } from '../../const';
+import Avatar from '../ui/Avatar';
 
 interface Props {
     message: MessageType
@@ -8,30 +9,34 @@ interface Props {
     onClickImage?: (src: string) => void
 }
 const ChatBubble: FC<Props> = ({ message, type, onClickImage }) => {
-    const { text, isSender, time } = message;
-    const messageContent = message.text.split("||");
+    const { text, isSender, time, userName, userImage } = message;
 
     return (
         <div className={`px-5 py-1 w-full `}>
-            <div className={`p-1 rounded-2xl text-sm min-w-10 w-fit ${isSender ? "ms-auto" : "me-auto"} max-w-[80%] md:max-w-[70%] lg:max-w-[50%] relative
-        ${isSender ? "bg-primary-main text-white rounded-tr-none" : "text-slate-800 bg-slate-300 rounded-tl-none"}`}>
-                <div className={`absolute top-0 ${isSender ? "-right-[6px] text-primary-main" : "-left-[6px] text-slate-300"}`}>
-                    {isSender ? prefix : prefixPeer}
-                </div>
-                {type == "FILE" ? (
-                    <>
-                        <div className='max-h-[25vw] rounded-xl w-max overflow-hidden cursor-pointer' onClick={() => onClickImage?.(messageContent[1])}>
-                            <img src={BASE_URL + messageContent[1]} className='bg-white max-w-[20vw]' />
-                        </div>
-                        {messageContent[2] && (
-                            <div className='w-full my-2 px-2 max-w-[20vw]'>
-                                {messageContent[2]}
+            <div className={`${isSender ? "ms-auto flex justify-end" : "me-auto flex gap-2"} max-w-[80%] md:max-w-[70%] lg:max-w-[50%]`}>
+                {!isSender && <Avatar name={userName} imageUrl={userImage} size={48} />}
+                <div className={`p-1 rounded-2xl text-sm min-w-10 w-fit relative h-fit
+                    ${isSender ? "bg-primary-main text-white rounded-tr-none" : "text-slate-800 bg-slate-300 rounded-tl-none"}`}>
+                    <div className={`absolute top-0 ${isSender ? "-right-[6px] text-primary-main" : "-left-[6px] text-slate-300"}`}>
+                        {isSender ? prefix : prefixPeer}
+                    </div>
+                    {!isSender && <div className='font-bold text-slate-500 text-xs ms-1 me-2'>{userName}</div>}
+
+                    {type == "IMAGE" ? (
+                        <>
+                            <div className='max-h-[25vw] rounded-xl w-max overflow-hidden cursor-pointer' onClick={() => onClickImage?.(message.path!)}>
+                                <img src={MEDIA_URL + message.path} className='bg-white max-w-[20vw]' />
                             </div>
-                        )}
-                    </>
-                ) : (
-                    <div className='p-2 w-full'>{text}</div>
-                )}
+                            {message && (
+                                <div className='w-full my-2 px-2 max-w-[20vw]'>
+                                    {message.text}
+                                </div>
+                            )}
+                        </>
+                    ) : (
+                        <div className='p-2 w-full'>{text}</div>
+                    )}
+                </div>
             </div>
             <div className={`text-xs text-slate-500 mt-2 w-max ${isSender ? "ms-auto" : "me-auto"}`}>{time}</div>
         </div>
